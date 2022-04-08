@@ -1,0 +1,78 @@
+import React, { Component } from 'react';
+import { Modal, Button } from 'antd';
+import ArticleForm from './ArticleForm';
+import Fire from "../Fire";
+import ArticleUpdateForm from "../components/ArticleUpdateForm"
+import AddCommentModal from './AddCommentModal';
+
+export default class ArticleModal extends Component {
+
+  constructor(){
+    super()
+    this.state = {
+      title   : '',
+      content : '',
+      author  : '',
+    }
+  }
+
+  handleArticle = () =>{
+    const article = this.props.news === '' ? this.state : this.props.news
+    const firebase    =  new Fire(error => {
+      if(error) this.setState({error: error})
+      else{
+        article.created_at = new Date()
+        if(this.props.method === "create"){
+          article.comments = []
+          firebase.addArticle(article)
+        }else {
+          article.title   = this.state.title   === '' ? this.props.news.title   : this.state.title
+          article.content = this.state.content === '' ? this.props.news.content : this.state.content
+          article.author  = this.state.author  === '' ? this.props.news.author  : this.state.author 
+          firebase.updateArticle(article)
+        }
+        this.setState({title  :''})
+        this.setState({content:''})
+        this.setState({author :''})
+      }
+    })
+
+  }
+
+  render() {
+    return (
+        <Modal 
+          title={this.props.title} 
+          visible={this.props.visibility} 
+          onCancel={this.props.onClose}
+          footer={[
+            <Button 
+              key="enter" 
+              onClick={this.handleArticle}
+            >
+              {this.props.method === "create" ? 'Créer' : 'Modifier'}
+            </Button>
+          ]}
+        >
+          { this.props.method === "create"
+            ? (<ArticleForm {...this.state} handleChange={this.handleChange} />) 
+            : (<ArticleUpdateForm 
+              title={this.state.title       === '' ? this.props.news.title    : this.state.title} 
+              content={this.state.content   === '' ? this.props.news.content  : this.state.content}
+              author={this.state.author     === '' ? this.props.news.author   : this.state.author}
+              handleChange={this.handleChange}
+            />)
+          }
+        </Modal>
+    );
+  }
+
+  handleChange = (e) => {
+    this.setState({[e.target.name]: e.target.value})
+  }
+
+  handleSubmit = () => {
+    alert(`Title : ${this.state.title} \r\nContent : ${this.state.content}`)
+    this.props.onClose()
+  }
+}
