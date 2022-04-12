@@ -29,7 +29,9 @@ export default class Comment extends Component {
             <span>
                 {!this.state.currentlyUpdatingComment && <p>
                     {this.props.commentForP}
-                </p>} {this.state.currentlyUpdatingComment && <TextArea value={this.props.commentForT} onChange={this.props.handleChange}></TextArea>}
+                    
+                </p>} 
+                {this.state.currentlyUpdatingComment && <TextArea value={this.props.commentForT} onChange={this.props.handleChange}></TextArea>}
                 {!this.state.currentlyUpdatingComment && [<EditOutlined key="edit" onClick={() => this.changeDOM()} />, <DeleteOutlined key="delete" onClick={this.props.remove} />]}
                 {this.state.currentlyUpdatingComment && <CheckOutlined key="validate" onClick={() => this.saveComment()} />}
             </span>

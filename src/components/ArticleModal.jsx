@@ -16,6 +16,10 @@ export default class ArticleModal extends Component {
     }
   }
 
+  checkValidityOfArticle(article){
+    return article.title.trim().length === 0 || article.content.trim().length === 0 || article.author.trim().length === 0
+  }
+
   handleArticle = () =>{
     const article = this.props.news === '' ? this.state : this.props.news
     const firebase    =  new Fire(error => {
@@ -24,7 +28,11 @@ export default class ArticleModal extends Component {
         article.created_at = new Date()
         if(this.props.method === "create"){
           article.comments = []
-          firebase.addArticle(article)
+          if(this.checkValidityOfArticle(article)) {
+            alert("Veuillez remplir tous les champs")
+            return
+          }
+          else firebase.addArticle(article)
         }else {
           article.title   = this.state.title   === '' ? this.props.news.title   : this.state.title
           article.content = this.state.content === '' ? this.props.news.content : this.state.content
@@ -34,9 +42,18 @@ export default class ArticleModal extends Component {
         this.setState({title  :''})
         this.setState({content:''})
         this.setState({author :''})
+        this.props.onClose()
       }
     })
+  }
 
+  handleChange = (e) => {
+    this.setState({[e.target.name]: e.target.value})
+  }
+
+  handleSubmit = () => {
+    alert(`Title : ${this.state.title} \r\nContent : ${this.state.content}`)
+    this.props.onClose()
   }
 
   render() {
@@ -65,14 +82,5 @@ export default class ArticleModal extends Component {
           }
         </Modal>
     );
-  }
-
-  handleChange = (e) => {
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-  handleSubmit = () => {
-    alert(`Title : ${this.state.title} \r\nContent : ${this.state.content}`)
-    this.props.onClose()
   }
 }

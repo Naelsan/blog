@@ -21,6 +21,7 @@ export default class AddCommentModal extends Component {
     }
 
     firebaseCallUpdate(article){
+      console.log(article)
       const firebase    =  new Fire(error => {
         if(error) this.setState({error: error})
         else{
@@ -30,7 +31,7 @@ export default class AddCommentModal extends Component {
       })
     }
 
-    removeCommetToArticle(index){
+    removeCommentToArticle(index){
       let commentBeforeRemoving = this.props.data.comments
       commentBeforeRemoving.splice(index,1)
       this.props.data.comments = commentBeforeRemoving
@@ -45,7 +46,8 @@ export default class AddCommentModal extends Component {
       if(this.state.addingComment && this.state.newCommentValue != ''){
         let temp = this.props.data.comments
         temp.push(this.state.newCommentValue)
-        this.firebaseCallUpdate(temp)
+        this.props.data.comments = temp
+        this.firebaseCallUpdate(this.props.data)
       }
       this.setState({
         addingComment : !this.state.addingComment
@@ -69,9 +71,6 @@ export default class AddCommentModal extends Component {
               <Button key="add" onClick={this.handleAddComment}>
                 Ajouter un nouveau commentaire
               </Button>,
-              <Button key="submit" type="primary" onClick={this.props.onClose}>
-                OK
-              </Button>,
             ]}>
                 <p>L'article "{title}" à reçu {comments.length} {comments.length >= 2 ? 'commentaires' : 'commentaire'}</p>
                {!this.state.addingComment && (comments.map((comment,index) => (
@@ -80,7 +79,7 @@ export default class AddCommentModal extends Component {
                     commentForT={this.state.currentComment == '' ? comment : this.state.currentComment} 
                     handleChange={this.handleChange} 
                     updateCurrentComment={() =>this.updateComment((this.state.currentComment == '' ? comment : this.state.currentComment), index)} 
-                    remove ={()=> this.removeCommetToArticle(index)}/>
+                    remove ={()=> this.removeCommentToArticle(index)}/>
                )))}
                {this.state.addingComment && <TextArea value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>}
         </Modal>
