@@ -12,6 +12,9 @@ export default class ArticleUpdateForm extends Component {
         <TextArea placeholder='Content' type='text' name='content' id='content' value={this.props.content} onChange={this.props.handleChange} />
         <label htmlFor='author'>Author</label>
         <Input placeholder='Author' type='text' name='author' id='author' value={this.props.author} onChange={this.props.handleChange} />
+        <label htmlFor='image'>Image url</label>
+        <Input placeholder='image' type='text' name='image' id='image' value={this.props.image} onChange={this.props.handleChange} />
+
       </>
     )
   }

@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
 import { Card, Avatar, Tooltip } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, BookOutlined } from '@ant-design/icons';
+import errorImage from '../images/actu.jpg'
 
 const { Meta } = Card
 
 export default class ArticleCard extends Component {
 
   render() {
-
+    let valideImage = true
+    if(this.props.image != undefined){
+      if(this.props.image.substring(0,4) !== "http")
+        valideImage = false
+    }
+    if(this.props.image == undefined || this.props.image === "") valideImage = false
     const dateTime  = new Date(this.props.date *1000)
     return (
       <div className='centerBlock'>
@@ -15,7 +21,7 @@ export default class ArticleCard extends Component {
           cover={
             <img
               alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              src={valideImage ? this.props.image : errorImage}
             />
           }
           actions={[

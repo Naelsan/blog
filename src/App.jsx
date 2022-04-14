@@ -191,6 +191,7 @@ export default class App extends React.Component {
                     title={data.title}
                     content={data.content}
                     date={data.created_at.seconds}
+                    image={data.image}
                     onDelete={() => {
                       this.changeVisibilityForDeleteConfirmation()
                       this.setState({currentArticle: data })

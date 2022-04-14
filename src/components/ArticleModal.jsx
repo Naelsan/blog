@@ -13,11 +13,12 @@ export default class ArticleModal extends Component {
       title   : '',
       content : '',
       author  : '',
+      image   : '',
     }
   }
 
   checkValidityOfArticle(article){
-    return article.title.trim().length === 0 || article.content.trim().length === 0 || article.author.trim().length === 0
+    return article.title.trim().length === 0 || article.content.trim().length === 0 || article.author.trim().length === 0 || article.image.trim().length === 0
   }
 
   handleArticle = () =>{
@@ -37,11 +38,13 @@ export default class ArticleModal extends Component {
           article.title   = this.state.title   === '' ? this.props.news.title   : this.state.title
           article.content = this.state.content === '' ? this.props.news.content : this.state.content
           article.author  = this.state.author  === '' ? this.props.news.author  : this.state.author 
+          article.image   = this.state.image   === '' ? this.props.news.image   : this.state.image
           firebase.updateArticle(article)
         }
         this.setState({title  :''})
         this.setState({content:''})
         this.setState({author :''})
+        this.setState({image  :''})
         this.props.onClose()
       }
     })
@@ -77,6 +80,7 @@ export default class ArticleModal extends Component {
               title={this.state.title       === '' ? this.props.news.title    : this.state.title} 
               content={this.state.content   === '' ? this.props.news.content  : this.state.content}
               author={this.state.author     === '' ? this.props.news.author   : this.state.author}
+              image={this.state.image       === '' ? this.props.news.image    : this.state.image}
               handleChange={this.handleChange}
             />)
           }
