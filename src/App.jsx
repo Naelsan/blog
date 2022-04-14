@@ -11,6 +11,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Real from "./Real"
 import RealArticleCard from "./components/RealArticleCard";
 import * as Papa from 'papaparse'
+import ModalDeleteArticle from "./components/ModalDeleteArticle";
 
 
 export default class App extends React.Component {
@@ -18,21 +19,22 @@ export default class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      isArticleModalVisible : false,
-      isUpdateModalVisible  : false,
-      isCommentModalVisible : false,
-      orderByComment        : false,
-      loading: true,
-      recentToOld: true,
-      articles: [],
-      articlesFilter: [],
-      realArticlesActu:[],
-      comments: null,
-      error: null,
-      newsMethod: null,
-      news: '',
-      filterArticle: ''
-
+      isArticleModalVisible       : false,
+      isUpdateModalVisible        : false,
+      isCommentModalVisible       : false,
+      isModalDeleteConfirmVisible : false,
+      orderByComment              : false,
+      loading                     : true,
+      recentToOld                 : true,
+      articles          :[],
+      articlesFilter    :[],
+      realArticlesActu  :[],
+      currentArticle  : null,
+      comments        : null,
+      error           : null,
+      newsMethod      : null,
+      news          : '',
+      filterArticle : ''
     }
   }
 
@@ -48,15 +50,19 @@ export default class App extends React.Component {
     })
   }
 
-  handleDelete = (index) => {
+  handleDelete = (articleToRemove) => {
     const article = this.state
-    const firebase = new Fire(error => {
+   const firebase = new Fire(error => {
       if (error) {
         this.setState({ error: error })
       } else {
-        firebase.deleteArticle(article.articles[index])
+        firebase.deleteArticle(articleToRemove)
       }
     })
+  }
+
+  changeVisibilityForDeleteConfirmation = () => {
+    this.setState({isModalDeleteConfirmVisible : !this.state.isModalDeleteConfirmVisible})
   }
 
   handleResetNewsClicked = () => {
@@ -180,12 +186,16 @@ export default class App extends React.Component {
               {this.state.loading && <Spin />}
               {this.state.error != null && <p className="red-text">{this.state.error}</p>}
               {this.state.articles.map((data, index) => (
-                <div className="col-4 mt-2 mb-2">
+                <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 mt-2 mb-2">
                   <ArticleCard
                     title={data.title}
                     content={data.content}
                     date={data.created_at.seconds}
-                    onDelete={() => this.handleDelete(index)}
+                    onDelete={() => {
+                      this.changeVisibilityForDeleteConfirmation()
+                      this.setState({currentArticle: data })
+                      }
+                    }
                     handleUpdateNews={() => {
                       this.setState({ newsMethod: 'update' })
                       this.changeVisibility()
@@ -234,6 +244,17 @@ export default class App extends React.Component {
             method={this.state.newsMethod}
             news={this.state.news} 
           />
+
+          {this.state.currentArticle != null && <ModalDeleteArticle
+            article={this.state.currentArticle}
+            visibility={this.state.isModalDeleteConfirmVisible}
+            onClose={() => this.changeVisibilityForDeleteConfirmation()}
+            onOk={() => {
+              this.changeVisibilityForDeleteConfirmation()
+              this.handleDelete(this.state.currentArticle)
+              }
+            }
+          />}
 
 
           {this.state.realArticlesActu.length > 0 && 
