@@ -39,3 +39,17 @@
 .centerBlock {
   margin: auto;
 }
+
+.container-header {
+  text-align:center;
+  width: 100%;
+}
+
+.space-between {
+  justify-content: space-between !important;
+}
+
+.container-comment {
+  display: flex;
+  justify-content: center;
+}

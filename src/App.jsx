@@ -86,6 +86,7 @@ export default class App extends React.Component {
   }
 
   handleFilterChange = (e) => {
+    if(e.target.value === "") this.setState({realArticlesActu: []})
     this.setState({ filterArticle: e.target.value })
     this.setState({ articles: this.state.articlesFilter.filter(article => article.title.toLowerCase().includes(e.target.value.toLowerCase().trimStart())) })
   }
@@ -145,24 +146,24 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-
         <section className="navbar-searching">
           <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand">Bienvenue sur BLOG</a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div className="container-header">
+            <a class="navbar-brand navbar-left">Bienvenue sur BLOG</a>
+            <div class="navbar-collapse space-between" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <Dropdown>
                   <Dropdown.Toggle>
                     Trier les articles
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item value="1" onClick={this.handleSortArticlesByDate}>{this.state.recentToOld ? '+ ancien au + récent' : "+ récent au + ancien"}</Dropdown.Item>
-                    <Dropdown.Item value="2" onClick={this.handleSortArticlesByComments}>{this.state.orderByComment ? 'Nombres de commetaires le moins élevé' : 'Nombres de commentaires le plus élevé'}</Dropdown.Item>
+                    <Dropdown.Item value="1" onClick={this.handleSortArticlesByDate}>{this.state.recentToOld ? 'Du plus ancien au plus récent' : "Du récent au plus ancien"}</Dropdown.Item>
+                    <Dropdown.Item value="2" onClick={this.handleSortArticlesByComments}>{this.state.orderByComment ? 'Nombre de commetaires le moins élevé' : 'Nombre de commentaires le plus élevé'}</Dropdown.Item>
                     <Dropdown.Item value="3" onClick={this.handleWithSort}>Sans tri</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </ul>
-              <form class="form-inline my-2 my-lg-0">
+              <form class="form-inline my-2 my-lg-0 navbar-center">
                 <Input id="searching_value" placeholder="Rechercher" value={this.state.filterArticle} onChange={this.handleFilterChange} onPressEnter={(e) => this.handleEnterPressedSearching(e)}/>
               </form>
               <AddButton
@@ -176,6 +177,7 @@ export default class App extends React.Component {
                   this.changeVisibility()
                 }}
               />
+            </div>
             </div>
           </nav>
         </section>

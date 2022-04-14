@@ -26,7 +26,7 @@ export default class Comment extends Component {
 
     render() {
         return (
-            <span>
+            <div className='container-comment'>
                 {!this.state.currentlyUpdatingComment && <p>
                     {this.props.commentForP}
                     
@@ -34,7 +34,7 @@ export default class Comment extends Component {
                 {this.state.currentlyUpdatingComment && <TextArea value={this.props.commentForT} onChange={this.props.handleChange}></TextArea>}
                 {!this.state.currentlyUpdatingComment && [<EditOutlined key="edit" onClick={() => this.changeDOM()} />, <DeleteOutlined key="delete" onClick={this.props.remove} />]}
                 {this.state.currentlyUpdatingComment && <CheckOutlined key="validate" onClick={() => this.saveComment()} />}
-            </span>
+            </div>
         )
     }
 }
