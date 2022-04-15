@@ -5,14 +5,13 @@ import { FormOutlined } from "@ant-design/icons/lib/icons";
 import ArticleModal from "./components/ArticleModal";
 import Fire from "./Fire";
 import ArticleCard from "./components/ArticleCard";
-import { Input, Spin } from 'antd'
+import { Input, Modal, Spin } from 'antd'
 import AddCommentModal from "./components/AddCommentModal";
 import Dropdown from "react-bootstrap/Dropdown";
 import Real from "./Real"
 import RealArticleCard from "./components/RealArticleCard";
 import * as Papa from 'papaparse'
 import ModalDeleteArticle from "./components/ModalDeleteArticle";
-
 
 export default class App extends React.Component {
 
@@ -29,6 +28,7 @@ export default class App extends React.Component {
       articles          :[],
       articlesFilter    :[],
       realArticlesActu  :[],
+      dataCSV           : [],
       currentArticle  : null,
       comments        : null,
       error           : null,
@@ -143,8 +143,21 @@ export default class App extends React.Component {
     }
   }
 
+
+  addArticlesFromCsv(articlesToAdd) {
+    articlesToAdd.map((article) =>{
+      const firebase    =  new Fire(error => {
+        if(error) this.setState({error: error})
+        else firebase.addArticle(article)
+      })
+    })
+    this.setState({loading: false})
+    this.setState({filterArticle:''})
+  }
+
   render() {
     return (
+      
       <div className="App">
         <section className="navbar-searching">
           <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
@@ -187,7 +200,7 @@ export default class App extends React.Component {
             <div className="row justify-content-center">
               {this.state.loading && <Spin />}
               {this.state.error != null && <p className="red-text">{this.state.error}</p>}
-              { this.state.articles.length > 0 &&
+              { this.state.articlesFilter.length > 0 &&
               (this.state.articles.map((data, index) => (
                 <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 mt-2 mb-2">
                   <ArticleCard
@@ -209,7 +222,8 @@ export default class App extends React.Component {
                   />
                 </div>
               )))
-              } {this.state.articles.length <= 0 && <h1 style={{color:'white'}}>Aucune actualité pour le moment</h1>}
+              } {this.state.articlesFilter.length <= 0 && <h1 style={{color:'white'}}>Aucune actualité pour le moment</h1>}
+              {this.state.articles.length >=0 && this.state.filterArticle.trim() != '' && <h1 style={{color:'white'}}>Aucune actualité pour cette recherche</h1>}
             </div>
           </div>
 
@@ -219,25 +233,25 @@ export default class App extends React.Component {
               download : true, 
               header: true,
               skipEmptyLines: true,
-              complete: function(res){
+              complete: (res) => {
+                const tempTabArticle = []
                 res.data.map((data, index) =>{
                   const article = {}
                   article.title = data.title
                   article.content = data.content
                   article.author = data.author
                   article.coments = data.comments
+                  article.image = data.image
                   article.created_at = new Date(data.created_at)
-                  const firebase    =  new Fire(error => {
-                    if(error) this.setState({error: error})
-                    else {
-                      firebase.addArticle(article)
-                      if(index == res.data.length -1){
-                        //this.setState({loading: false})
-                        document.getElementById('searching_value').value = ''
-                      }
-                    }
-                  })
+                  if( data.title      != '' && data.title       != undefined &&
+                      data.content    != '' && data.content     != undefined && 
+                      data.author     != '' && data.author      != undefined &&
+                      data.image      != '' && data.image       != undefined &&
+                      data.created_at != '' && data.created_at  != undefined){
+                        tempTabArticle.push(article)
+                  }
                 })
+                this.addArticlesFromCsv(tempTabArticle)
               }
             })
           }}/>
