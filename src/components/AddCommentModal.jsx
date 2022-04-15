@@ -54,6 +54,7 @@ export default class AddCommentModal extends Component {
       this.props.data.comments = temp
       this.firebaseCallUpdate(this.props.data)
       this.setState({newCommentValue: ''})
+      this.setState({author: ''})
     }
     this.setState({
       addingComment: !this.state.addingComment
@@ -79,19 +80,21 @@ export default class AddCommentModal extends Component {
           </Button>,
         ]}>
         <p>L'article "{title}" à reçu {comments.length} {comments.length >= 2 ? 'commentaires' : 'commentaire'}</p>
-        <div className='scrollable-list' style={ this.state.addingComment ? {height: '100px'} : {height: '200px'}}>
-        {comments.map((comment, index) => (
-            <Comment
-              commentForP={comment.comment}
-              commentForT={this.state.currentComment == '' ? comment.comment : this.state.currentComment}
-              author={comment.author}
-              date={comment.date}
-              handleChange={this.handleChange}
-              onEdit={this.onEditingChange}
-              updateCurrentComment={() => this.updateComment((this.state.currentComment == '' ? comment.comment : this.state.currentComment), comment.author, index)}
-              remove={() => this.removeCommentToArticle(index)} />
-          ))}
-        </div>
+        { comments.length > 0 &&
+          <div className='scrollable-list' style={ this.state.addingComment ? {height: '100px'} : {height: '200px'}}>
+          {comments.map((comment, index) => (
+              <Comment
+                commentForP={comment.comment}
+                commentForT={this.state.currentComment == '' ? comment.comment : this.state.currentComment}
+                author={comment.author}
+                date={comment.date}
+                handleChange={this.handleChange}
+                onEdit={this.onEditingChange}
+                updateCurrentComment={() => this.updateComment((this.state.currentComment == '' ? comment.comment : this.state.currentComment), comment.author, index)}
+                remove={() => this.removeCommentToArticle(index)} />
+            ))}
+          </div> }
+          {comments.length <= 0 && <p>Aucun commentaire pour le moment...</p>}
         {this.state.addingComment && ["Commentaire : ", <TextArea name="newCommentValue" value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>]}
         {this.state.addingComment && ["Auteur : ", <Input name="author" value={this.state.author} onChange={this.handleNewCommentChange}></Input>]}
 

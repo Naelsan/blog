@@ -187,7 +187,8 @@ export default class App extends React.Component {
             <div className="row justify-content-center">
               {this.state.loading && <Spin />}
               {this.state.error != null && <p className="red-text">{this.state.error}</p>}
-              {this.state.articles.map((data, index) => (
+              { this.state.articles.length > 0 &&
+              (this.state.articles.map((data, index) => (
                 <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 mt-2 mb-2">
                   <ArticleCard
                     title={data.title}
@@ -207,7 +208,8 @@ export default class App extends React.Component {
                     handleComment={() => this.openCommentModal(data)}
                   />
                 </div>
-              ))}
+              )))
+              } {this.state.articles.length <= 0 && <h1 style={{color:'white'}}>Aucune actualité pour le moment</h1>}
             </div>
           </div>
 
