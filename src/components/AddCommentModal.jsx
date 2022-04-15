@@ -6,83 +6,92 @@ import TextArea from 'antd/lib/input/TextArea';
 
 
 export default class AddCommentModal extends Component {
-    constructor(){
-        super()
-        this.state = {
-          currentComment : '',
-          addingComment: false,
-          newCommentValue: ''
-        }
+  constructor() {
+    super()
+    this.state = {
+      currentComment: '',
+      addingComment: false,
+      newCommentValue: '',
+      isCommentEditing: false
+
     }
+  }
 
-    updateComment(comment, index){
-      this.props.data.comments[index] = comment
-      this.firebaseCallUpdate(this.props.data)
-    }
+  updateComment(comment, index) {
+    this.props.data.comments[index] = comment
+    this.firebaseCallUpdate(this.props.data)
+  } 
 
-    firebaseCallUpdate(article){
-      console.log(article)
-      const firebase    =  new Fire(error => {
-        if(error) this.setState({error: error})
-        else{
-          firebase.updateArticle(article)
-          this.setState({currentComment: ''})
-        }
-      })
-    }
+  onEditingChange = () =>{
+    this.setState({isCommentEditing: !this.state.isCommentEditing})
+  }
 
-    removeCommentToArticle(index){
-      let commentBeforeRemoving = this.props.data.comments
-      commentBeforeRemoving.splice(index,1)
-      this.props.data.comments = commentBeforeRemoving
-      this.firebaseCallUpdate(this.props.data)
-    }
-
-    handleChange = (e) => {
-      this.setState({currentComment: e.target.value})
-    } 
-
-    handleAddComment = ()=> {
-      if(this.state.addingComment && this.state.newCommentValue != ''){
-        let temp = this.props.data.comments
-        temp.push(this.state.newCommentValue)
-        this.props.data.comments = temp
-        this.firebaseCallUpdate(this.props.data)
+  firebaseCallUpdate(article) {
+    const firebase = new Fire(error => {
+      if (error) this.setState({ error: error })
+      else {
+        firebase.updateArticle(article)
+        this.setState({ currentComment: '' })
       }
-      this.setState({
-        addingComment : !this.state.addingComment
-      })
-    }
+    })
+  }
 
-    handleNewCommentChange = (e) =>{
-      this.setState({newCommentValue : e.target.value})
+  removeCommentToArticle(index) {
+    let commentBeforeRemoving = this.props.data.comments
+    commentBeforeRemoving.splice(index, 1)
+    this.props.data.comments = commentBeforeRemoving
+    this.firebaseCallUpdate(this.props.data)
+  }
+
+  handleChange = (e) => {
+    this.setState({ currentComment: e.target.value })
+  }
+
+  handleAddComment = () => {
+    if (this.state.addingComment && this.state.newCommentValue != '') {
+      let temp = this.props.data.comments
+      temp.push(this.state.newCommentValue)
+      this.props.data.comments = temp
+      this.firebaseCallUpdate(this.props.data)
+      this.setState({newCommentValue: ''})
     }
+    this.setState({
+      addingComment: !this.state.addingComment
+    })
+  }
+
+  handleNewCommentChange = (e) => {
+    this.setState({ newCommentValue: e.target.value })
+  }
 
   render() {
-      let comments  = this.props.data.comments
-      let title     = this.props.data.title 
+    let comments = this.props.data.comments
+    let title = this.props.data.title
 
     return (
-        <Modal 
-            visible={this.props.visibility} 
-            onCancel={this.props.onClose}
-            onOk={this.props.onClose}
-            footer={[
-              <Button key="add" onClick={this.handleAddComment}>
-                Ajouter un nouveau commentaire
-              </Button>,
-            ]}>
-                <p>L'article "{title}" à reçu {comments.length} {comments.length >= 2 ? 'commentaires' : 'commentaire'}</p>
-               {!this.state.addingComment && (comments.map((comment,index) => (
-                 <Comment 
-                    commentForP={comment}
-                    commentForT={this.state.currentComment == '' ? comment : this.state.currentComment} 
-                    handleChange={this.handleChange} 
-                    updateCurrentComment={() =>this.updateComment((this.state.currentComment == '' ? comment : this.state.currentComment), index)} 
-                    remove ={()=> this.removeCommentToArticle(index)}/>
-               )))}
-               {this.state.addingComment && <TextArea value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>}
-        </Modal>
+      <Modal
+        visible={this.props.visibility}
+        onCancel={this.props.onClose}
+        onOk={this.props.onClose}
+        footer={[
+          <Button disabled={this.state.isCommentEditing} key="add" onClick={this.handleAddComment}>
+            Ajouter un nouveau commentaire
+          </Button>,
+        ]}>
+        <p>L'article "{title}" à reçu {comments.length} {comments.length >= 2 ? 'commentaires' : 'commentaire'}</p>
+        <div className='scrollable-list'>
+        {comments.map((comment, index) => (
+            <Comment
+              commentForP={comment}
+              commentForT={this.state.currentComment == '' ? comment : this.state.currentComment}
+              handleChange={this.handleChange}
+              onEdit={this.onEditingChange}
+              updateCurrentComment={() => this.updateComment((this.state.currentComment == '' ? comment : this.state.currentComment), index)}
+              remove={() => this.removeCommentToArticle(index)} />
+          ))}
+        </div>
+        {this.state.addingComment && <TextArea value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>}
+      </Modal>
     )
   }
 }

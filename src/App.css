@@ -51,5 +51,27 @@
 
 .container-comment {
   display: flex;
-  justify-content: center;
+  border: 2px solid grey;
+  margin-top: 3px;
+}
+
+.scrollable-list {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 200px;
+}
+
+.container-comment-buttons{
+  display:inline-block;
+  width:50%;
+}
+
+.right-edit {
+  display: flex !important;
+  justify-content: end;
+}
+
+.left-comment {
+  display: flex !important;
+  justify-content: start;
 }
