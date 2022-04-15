@@ -25,19 +25,20 @@ export default class Comment extends Component {
     saveComment() {
         this.setState({ currentlyUpdatingComment: !this.state.currentlyUpdatingComment })
         this.props.updateCurrentComment()
+        this.props.onEdit()
     }
 
     render() {
         return (
             <div className='container-comment'>
                 <div className='container-comment-buttons left-comment'>
-                {!this.state.currentlyUpdatingComment && <p>
-                    {this.props.commentForP}
-                </p>} 
-                {this.state.currentlyUpdatingComment && <TextArea value={this.props.commentForT} onChange={this.props.handleChange}></TextArea>}
+                    {!this.state.currentlyUpdatingComment && <p>
+                        {this.props.commentForP}
+                    </p>}
+                    {this.state.currentlyUpdatingComment && <TextArea value={this.props.commentForT} onChange={this.props.handleChange}></TextArea>}
                 </div>
                 <div className='container-comment-buttons right-edit'>
-                    {!this.state.currentlyUpdatingComment && [<Tooltip title={this.props.commentForT}><Avatar shape="square" size="small" icon={<UserOutlined />} /></Tooltip>,<EditOutlined key="edit" onClick={() => {this.changeDOM();this.props.onEdit()}} />, <DeleteOutlined key="delete" onClick={this.props.remove} />]}
+                    {!this.state.currentlyUpdatingComment && [<Tooltip title={"Par " + (this.props.author ? this.props.author : "Anonymous") + " le " + (this.props.date.seconds ? new Date(this.props.date.seconds * 1000).toLocaleDateString() : this.props.date.toLocaleDateString())}><Avatar shape="square" size="small" icon={<UserOutlined />} /></Tooltip>, <EditOutlined key="edit" onClick={() => { this.changeDOM(); this.props.onEdit() }} />, <DeleteOutlined key="delete" onClick={this.props.remove} />]}
                     {this.state.currentlyUpdatingComment && <CheckOutlined key="validate" onClick={() => this.saveComment()} />}
                 </div>
             </div>

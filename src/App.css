@@ -58,7 +58,6 @@
 .scrollable-list {
   overflow: hidden;
   overflow-y: scroll;
-  height: 200px;
 }
 
 .container-comment-buttons{

@@ -1,4 +1,4 @@
-import { Modal, Button } from 'antd'
+import { Modal, Button, Input } from 'antd'
 import React, { Component } from 'react'
 import Comment from './Comment';
 import Fire from "../Fire";
@@ -9,16 +9,16 @@ export default class AddCommentModal extends Component {
   constructor() {
     super()
     this.state = {
-      currentComment: '',
-      addingComment: false,
-      newCommentValue: '',
-      isCommentEditing: false
-
+      addingComment   : false,
+      isCommentEditing: false,
+      currentComment  : '',
+      newCommentValue : '',
+      author          : ''
     }
   }
 
-  updateComment(comment, index) {
-    this.props.data.comments[index] = comment
+  updateComment(comment, author, index) {
+    this.props.data.comments[index] = ({"author": author, "comment":comment, date:new Date()})
     this.firebaseCallUpdate(this.props.data)
   } 
 
@@ -48,9 +48,9 @@ export default class AddCommentModal extends Component {
   }
 
   handleAddComment = () => {
-    if (this.state.addingComment && this.state.newCommentValue != '') {
+    if (this.state.addingComment && this.state.newCommentValue.trim() != '' && this.state.author.trim() != '') {
       let temp = this.props.data.comments
-      temp.push(this.state.newCommentValue)
+      temp.push({"comment":this.state.newCommentValue, "author":this.state.author, "date":new Date()})
       this.props.data.comments = temp
       this.firebaseCallUpdate(this.props.data)
       this.setState({newCommentValue: ''})
@@ -61,7 +61,7 @@ export default class AddCommentModal extends Component {
   }
 
   handleNewCommentChange = (e) => {
-    this.setState({ newCommentValue: e.target.value })
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   render() {
@@ -79,18 +79,22 @@ export default class AddCommentModal extends Component {
           </Button>,
         ]}>
         <p>L'article "{title}" à reçu {comments.length} {comments.length >= 2 ? 'commentaires' : 'commentaire'}</p>
-        <div className='scrollable-list'>
+        <div className='scrollable-list' style={ this.state.addingComment ? {height: '100px'} : {height: '200px'}}>
         {comments.map((comment, index) => (
             <Comment
-              commentForP={comment}
-              commentForT={this.state.currentComment == '' ? comment : this.state.currentComment}
+              commentForP={comment.comment}
+              commentForT={this.state.currentComment == '' ? comment.comment : this.state.currentComment}
+              author={comment.author}
+              date={comment.date}
               handleChange={this.handleChange}
               onEdit={this.onEditingChange}
-              updateCurrentComment={() => this.updateComment((this.state.currentComment == '' ? comment : this.state.currentComment), index)}
+              updateCurrentComment={() => this.updateComment((this.state.currentComment == '' ? comment.comment : this.state.currentComment), comment.author, index)}
               remove={() => this.removeCommentToArticle(index)} />
           ))}
         </div>
-        {this.state.addingComment && <TextArea value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>}
+        {this.state.addingComment && ["Commentaire : ", <TextArea name="newCommentValue" value={this.state.newCommentValue} onChange={this.handleNewCommentChange}></TextArea>]}
+        {this.state.addingComment && ["Auteur : ", <Input name="author" value={this.state.author} onChange={this.handleNewCommentChange}></Input>]}
+
       </Modal>
     )
   }

@@ -32,16 +32,10 @@ export default class ArticleCard extends Component {
           ]}
         >
           <Meta
-            /* avatar={
-              <Tooltip placement="topLeft" title="Prompt Text">
-                <Avatar src="https://joeschmoe.io/api/v1/random" />
-              </Tooltip>
-            } */
             title={this.props.title}
             description={this.props.content}
-          />
-          <p>Le {dateTime.toLocaleDateString()} 
-            à {dateTime.getHours()}:
+          /><br/>
+          <p>Le {dateTime.toLocaleDateString()} à {dateTime.getHours()}:
             {dateTime.getMinutes()}:
             {dateTime.getSeconds().toString().length == 1 ? `0${dateTime.getSeconds()}` :dateTime.getSeconds() }
           </p>
