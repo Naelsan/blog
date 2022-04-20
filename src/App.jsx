@@ -145,14 +145,18 @@ export default class App extends React.Component {
 
 
   addArticlesFromCsv(articlesToAdd) {
-    articlesToAdd.map((article) =>{
-      const firebase    =  new Fire(error => {
-        if(error) this.setState({error: error})
-        else firebase.addArticle(article)
+    if(articlesToAdd.length > 0 ){
+      articlesToAdd.map((article) =>{
+        const firebase    =  new Fire(error => {
+          if(error) this.setState({error: error})
+          else firebase.addArticle(article)
+        })
       })
-    })
+    }else alert("Fichier incorrect")
     this.setState({loading: false})
     this.setState({filterArticle:''})
+    this.setState({ articles: this.state.articlesFilter})
+
   }
 
   render() {
@@ -240,7 +244,7 @@ export default class App extends React.Component {
                   article.title = data.title
                   article.content = data.content
                   article.author = data.author
-                  article.coments = data.comments
+                  article.comments = data.comments != '' ? data.comments : []
                   article.image = data.image
                   article.created_at = new Date(data.created_at)
                   if( data.title      != '' && data.title       != undefined &&
