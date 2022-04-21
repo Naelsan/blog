@@ -1,6 +1,7 @@
 {
   "name": "blog",
   "version": "0.1.0",
+  "homepage": "https://Naelsan.github.io/blog",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -25,7 +26,9 @@
     "build": "react-scripts build",
     "serve": "serve build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
