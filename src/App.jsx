@@ -221,6 +221,11 @@ export default class App extends React.Component {
                       this.changeVisibility()
                       this.setState({ news: data })
                     }}
+                    handleShow={() => {
+                      this.setState({newsMethod: 'view'})
+                      this.changeVisibility()
+                      this.setState({news:data})
+                    }}
                     handleComment={() => this.openCommentModal(data)}
                   />
                 </div>
@@ -262,7 +267,7 @@ export default class App extends React.Component {
           <ArticleModal
             visibility={this.state.isArticleModalVisible}
             onClose={() => this.changeVisibility()}
-            title={this.state.newsMethod === "create" ? "Rédiger un article" : "Modifier un article"}
+            title={this.state.newsMethod}
             method={this.state.newsMethod}
             news={this.state.news} 
           />

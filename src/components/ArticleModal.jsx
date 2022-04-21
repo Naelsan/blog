@@ -60,23 +60,38 @@ export default class ArticleModal extends Component {
   }
 
   render() {
+    let title = ''
+    switch(this.props.title){
+      case 'create':
+        title = 'Rédiger un article';
+        break;
+      case 'update':
+        title = 'Modifier un article';
+        break;
+      case 'view':
+        title = 'Affichage de l\'article';
+        break;
+      default: 
+        title = 'Article';
+    }
     return (
         <Modal 
-          title={this.props.title} 
+          title={title} 
           visible={this.props.visibility} 
           onCancel={this.props.onClose}
           footer={[
-            <Button 
+            (title != "Affichage de l'article" && <Button 
               key="enter" 
               onClick={this.handleArticle}
             >
               {this.props.method === "create" ? 'Créer' : 'Modifier'}
-            </Button>
+            </Button>)
           ]}
         >
           { this.props.method === "create"
             ? (<ArticleForm {...this.state} handleChange={this.handleChange} />) 
             : (<ArticleUpdateForm 
+              blockFields={title}
               title={this.state.title       === '' ? this.props.news.title    : this.state.title} 
               content={this.state.content   === '' ? this.props.news.content  : this.state.content}
               author={this.state.author     === '' ? this.props.news.author   : this.state.author}

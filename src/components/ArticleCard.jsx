@@ -25,7 +25,7 @@ export default class ArticleCard extends Component {
             />
           }
           actions={[
-            <EyeOutlined key="show" />,
+            <EyeOutlined key="show" onClick={this.props.handleShow} />,
             <EditOutlined key="edit" onClick={this.props.handleUpdateNews} />,
             <BookOutlined key="comment" onClick={this.props.handleComment} />,
             <DeleteOutlined key="delete" onClick={this.props.onDelete} />
