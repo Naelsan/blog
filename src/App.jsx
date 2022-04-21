@@ -88,7 +88,7 @@ export default class App extends React.Component {
   handleFilterChange = (e) => {
     if(e.target.value === "") this.setState({realArticlesActu: []})
     this.setState({ filterArticle: e.target.value })
-    this.setState({ articles: this.state.articlesFilter.filter(article => article.title.toLowerCase().includes(e.target.value.toLowerCase().trimStart())) })
+    this.setState({ articles: this.state.articlesFilter.filter(article => (article.title.toLowerCase().includes(e.target.value.toLowerCase().trimStart()) || article.content.toLowerCase().includes(e.target.value.toLowerCase().trimStart()) )) })
   }
 
   handleSortArticlesByDate = () => {
@@ -156,7 +156,6 @@ export default class App extends React.Component {
     this.setState({loading: false})
     this.setState({filterArticle:''})
     this.setState({ articles: this.state.articlesFilter})
-
   }
 
   render() {
@@ -227,7 +226,7 @@ export default class App extends React.Component {
                 </div>
               )))
               } {this.state.articlesFilter.length <= 0 && <h1 style={{color:'white'}}>Aucune actualité pour le moment</h1>}
-              {this.state.articles.length >=0 && this.state.filterArticle.trim() != '' && <h1 style={{color:'white'}}>Aucune actualité pour cette recherche</h1>}
+              {this.state.articles.length >=0 && this.state.filterArticle.trim() != '' && this.state.realArticlesActu.lenght <= 0 && <h1 style={{color:'white'}}>Aucune actualité pour cette recherche</h1>}
             </div>
           </div>
 
@@ -244,7 +243,7 @@ export default class App extends React.Component {
                   article.title = data.title
                   article.content = data.content
                   article.author = data.author
-                  article.comments = data.comments != '' ? data.comments : []
+                  article.comments = []
                   article.image = data.image
                   article.created_at = new Date(data.created_at)
                   if( data.title      != '' && data.title       != undefined &&
